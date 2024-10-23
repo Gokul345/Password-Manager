@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Password</title>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='back.css') }}">
+    <style>
+        body {
+            overflow-y: hidden;
+            font-family: helvetica;
+            background-color: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        .form-container {
+            width: 40%;
+            background: linear-gradient(90deg, rgb(255, 255, 255) 0%, rgb(244, 247, 251) 100%);
+            border-radius: 40px;
+            padding: 0;
+            box-shadow: #ffa500 0px 30px 30px -20px;
+            margin: 1px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 100px;
+            transform: translateY(-55px);
+            height: 550px; /* Set a fixed height */
+            overflow: hidden;
+        }
+        .edit {
+            font-size: 24px;
+            margin-top: 50px;
+            padding-left: 550px;
+        }
+        .edit-form {
+            width: 100%;
+            padding: 25px 35px;
+            border-radius: 40px;
+            background: inherit;
+            box-shadow: none;
+            height: 100%;
+            overflow-y: auto;
+        }
+        .edit-form label {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .edit-form input {
+            width: 100%;
+            background: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            box-shadow: #ffa500 0px 10px 10px -5px;
+            border-inline: 2px solid transparent;
+        }
+        .edit-form input:focus {
+            outline: none;
+            border-inline: 2px solid #ffa500;
+        }
+        .password-container {
+            position: relative;
+        }
+        .edit-form .password-container input[type="password"] {
+            padding-right: 40px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 60%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .toggle-password i {
+            font-size: 18px;
+            color: #888;
+        }
+        .edit-form .save-button {
+            display: block;
+            width: 100%;
+            font-weight: bold;
+            background: white;
+            color: #ffa500;
+            padding-block: 15px;
+            margin: 20px auto;
+            border-radius: 20px;
+            border: 1px solid #ffa500;
+            transition: all 0.2s ease-in-out;
+        }
+        .edit-form .save-button:hover {
+            background-color: #ffa500;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="javascript:void(0)" onclick="handleClick('/passwords')" class="back">
+        <img src="{{ url_for('static', filename='back.png') }}" alt="Image">
+    </a>
+    <h2 class="edit">Update Password</h2>
+
+    <div class="form-container">
+        <form class="edit-form" action="/edit_password/{{ edit.name }}" method="POST" enctype="multipart/form-data">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ edit.name }}" required readonly>
+
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" value="{{ edit.category }}" required>
+
+            <label for="folder">Folder:</label>
+            <input type="text" id="folder" name="folder" value="{{ edit.folder }}">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ edit.email }}" required>
+
+            <label for="password">Password:</label>
+            <div class="password-container">
+                <input type="password" id="pwd" name="pwd" value="{{ edit.password }}" required>
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i class="far fa-eye" id="togglePassword"></i>
+                </span>
+            </div>
+
+            <label for="website">Website:</label>
+            <input type="url" id="website" name="website" value="{{ edit.website }}" required>
+
+            <div class="form-buttons">
+                <button type="submit" class="save-button">Update</button>
+            </div>
+        </form>
+    </div>
+
+    
+</body>
+</html>

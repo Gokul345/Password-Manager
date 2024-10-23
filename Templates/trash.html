@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trash</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='back.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='checkbox.css') }}">
+
+    <style>
+       * {
+            margin: 0;
+            padding: 0;
+
+            box-sizing: border-box;
+            font-family: helvetica;
+        }
+        @media print {
+        .table, .table-container {
+        overflow: visible;
+        height: auto !important;
+        width: auto !important;
+        }
+        }
+
+        /* General Styles */
+        body {
+            font-size: 14px;
+            font-family:Helvetica;
+            background-color: #f4f4f4;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header Style */
+        h1 {
+            margin-left: 20px;
+            color: #444;
+            font-size: 18px;
+        }
+
+        /* Back Button */
+        .back {
+            text-decoration: none;
+        }
+
+        
+        .table-container {
+            width: 95%;
+            margin: 20px auto; /* Center the table */
+            border-radius: .6rem;
+            max-height: 700px; /* Set a maximum height for the table container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            background-color: white; /* Optional: Add a background color for contrast */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for visual depth */
+        }
+
+        /* Table Alignment */
+       /* Style for the table itself */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        /* Fixed header style */
+        thead tr {
+            position: sticky; /* Keep the header fixed */
+            top: 0; /* Position it at the top of the container */
+            background-color: #e77d22; /* Background color to avoid transparency */
+            z-index: 1; /* Ensure it is above the table body */
+        }
+        th {
+            padding: 10px; /* Padding for header cells */
+            border-bottom: 2px solid #ddd; /* Optional: Add a bottom border */
+        }
+        td,th{
+            padding: 12px 15px;
+            text-align: left;
+        } 
+
+        /* Table Cells */
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        /* Zebra stripes */
+        tbody tr:nth-child(even) {
+            background-color: white; /* Light gray for even rows */
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9; /* White for odd rows */
+        }
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Adjust for rounded corners */
+        thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+        thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+        tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+        tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+
+        /* Folder and Password Image */
+        .folder-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .folder-image, .pwd-image {
+            width: 24px;
+            height: 24px;
+            background-size: contain;
+            margin-right: 8px;
+        }
+
+                /* Ensure the images are correctly linked */
+        .folder-image {
+            background-image: url('{{ url_for('static', filename='folder.jpg') }}');
+        }
+
+        .pwd-image {
+            background-image: url('{{ url_for('static', filename='pwd.jpg') }}');
+        }
+
+        /* Circle Styling */
+        .circle {
+            border-radius: 50%;
+            background-color: #abcdff;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .circle i {
+            font-size: 16px;
+            color: black;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: left;
+            gap: 10px;
+            margin-left: 850px;
+            margin-top: 50px; /* Increased top margin to move the buttons down */
+
+        }
+
+        .restore{
+            display: block;
+            width: 135px;
+            height: 40px;
+            font-weight: bold;
+            background: linear-gradient(#ff9933, #fe5a1d);
+            color: #003366;
+            margin: 20px auto;
+            box-shadow: rgba(0,0,0,0.2) 0px 20px 10px -15px;
+            border: 1px solid black; /* Set the initial border color */
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 25px;
+            text-align: center;
+            padding-top: 15px;
+        }
+         .delete {
+            display: block;
+            width: 135px;
+            height: 40px;
+            font-weight: bold;
+            background: white;
+            color: #ff6900;
+            margin: 20px auto;
+            box-shadow: rgba(0,0,0,0.2) 0px 20px 10px -15px;
+            border-inline: black;
+            border: 1px solid black; /* Set the initial border color */
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 25px;
+            text-align: center;
+            padding-top: 15px;
+        }
+
+        .restore:hover, .delete:hover {
+            transform: scale(1.03);
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
+            background: #ff6900;
+            color: white;
+        }
+
+        .restore:active, .delete:active {
+            transform: scale(0.95);
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 15px 10px -10px;
+        }
+        @media (max-width: 1000px) {
+            td:not(:first-of-type) {
+                min-width: 12.1rem;
+            }
+        }
+
+        thead th span.icon-arrow {
+            display: inline-block;
+            width: 1.3rem;
+            height: 1.3rem;
+            border-radius: 50%;
+            border: 1.4px solid transparent;
+            
+            text-align: center;
+            font-size: 1rem;
+            
+            margin-left: .5rem;
+            transition: .2s ease-in-out;
+        }
+
+        thead th:hover span.icon-arrow{
+            border: 1.4px solid #6c00bd;
+        }
+
+        thead th:hover {
+            color: #6c00bd;
+        }
+
+        thead th.active span.icon-arrow{
+            background-color: #6c00bd;
+            color: #fff;
+        }
+
+        thead th.asc span.icon-arrow{
+            transform: rotate(180deg);
+        }
+
+        thead th.active,tbody td.active {
+            color: #6c00bd;
+        }
+        
+    </style>
+</head>
+<body>
+        
+        <div class="action-buttons" id="action-buttons">
+            <a href="javascript:void(0);" onclick="restoreAll('/restore_all')" class="restore" id="restore-btn">Restore All</a>
+            <a href="javascript:void(0);" onclick="deleteAll('/delete_all')" class="delete" id="delete-btn">Delete All</a>
+            
+        </div>
+        <section class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th> <!-- Empty header cell for checkboxes -->
+                        {% for i in headings %}
+                        <th onclick="sortColumn({{ loop.index }})">{{ i }}<span class="icon-arrow">&UpArrow;</span></th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pwd in passwords %}
+                    <tr>
+                        <td> 
+                            <div class="cntr">
+                                <input type="checkbox" id="cbx{{ loop.index }}" name="item_ids" value="{{ pwd[0] }}" class="hidden-xs-up" onchange="updateButtonText()">
+                                <label for="cbx{{ loop.index }}" class="cbx"></label>
+                            </div>
+                        </td>
+                        
+                        <td>
+                            <div class="folder-container">
+                                {% if pwd[1] == 'Password' %}
+                                <div class="pwd-image"></div>
+                                {{ pwd[0] }}
+                                {% else %}
+                                <div class="folder-image"></div>
+                                {{ pwd[0] }}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>{{ pwd[1] }}</td>
+                        <td style="color: grey;">{{ pwd[2] }}</td>
+                        <td style="color: grey;">{{ pwd[3] }}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        
+   <!-- Action buttons -->
+   
+
+    <script>
+        // Function to update button text based on checkbox selection
+        function updateButtonText() {
+            var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            var anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            var restoreButton = document.getElementById('restore-btn');
+            var deleteButton = document.getElementById('delete-btn');
+
+            if (anyChecked) {
+                restoreButton.textContent = 'Restore Selected';
+                restoreButton.setAttribute('onclick', "handleSelectedItems('/restore_selected', true)");
+                deleteButton.textContent = 'Delete Selected';
+                deleteButton.setAttribute('onclick', "handleSelectedItems('/delete_selected', false)");
+            } else {
+                restoreButton.textContent = 'Restore All';
+                restoreButton.setAttribute('onclick', "restoreAll('/restore_all')");
+                deleteButton.textContent = 'Delete All';
+                deleteButton.setAttribute('onclick', "deleteAll('/delete_all')");
+            }
+        }
+        // Sorting function
+        function sortColumn(column) {
+            let table = document.querySelector('tbody');
+            let rows = Array.from(table.querySelectorAll('tr'));
+            let sort_asc = !table.getAttribute('data-sort-asc') || table.getAttribute('data-sort-asc') === 'false';
+            table.setAttribute('data-sort-asc', sort_asc);
+
+            rows.sort((a, b) => {
+                let first = a.querySelectorAll('td')[column].textContent.toLowerCase();
+                let second = b.querySelectorAll('td')[column].textContent.toLowerCase();
+
+                if (sort_asc) {
+                    return first.localeCompare(second);
+                } else {
+                    return second.localeCompare(first);
+                }
+            });
+
+            rows.forEach(row => table.appendChild(row));
+        }
+    </script>
+</body>
+</html>

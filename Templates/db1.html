@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberVault Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+
+    <!-- Include jsPDF AutoTable plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.18/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        /* Reset CSS - Normalize */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Helvetica;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased; /* Chrome, Safari */
+            -moz-osx-font-smoothing: grayscale; /* Firefox */
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            width: 100%;
+        }
+        /* Sidebar h2 - Fixed positioning */
+        .sidebar h2 {
+            position: fixed;
+            top: 0;               /* Fix it at the top of the sidebar */
+            width: 230px;          /* Ensure it fits the sidebar width */
+            display: flex;
+            justify-content: center; /* Horizontal center */
+            align-items: center;     /* Vertical center */
+            height: 80px;            /* Adjust height to ensure it's a single line */
+            font-size: 24px;
+            margin: 0;               /* Remove any default margins */
+            text-align: center;      /* Center the text */
+            color: black;            /* Adjust text color if needed */
+            background: #e77d22;     /* Ensure it matches sidebar background */
+            z-index: 1;              /* Ensure it stays above other content */
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            width: 230px; /* Reduce width slightly */
+            position: fixed;
+            top: 0;
+            left: 0;
+            background:#e77d22;
+            overflow-x: hidden;
+            transition: width 0.5s;
+            padding-top: 20px;
+            border-right:2px solid #ffb257; /* Ensure no visible border */
+
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin-top: 75px;
+        }
+
+        .sidebar ul li {
+            width: 100%;
+        }
+
+        .sidebar ul li .nav {
+            display: flex;
+            align-items: center;
+            padding: 10px 30px;
+            color: black;
+            cursor: pointer;
+            text-decoration: none;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+            background: var(--clr);
+            transition: background-color 0.3s;
+            left:0;
+            margin-right: 10px; /* Add margin to create space from the edge */
+        }
+
+        .sidebar ul li .nav:hover {
+            border: 1px solid #ffb257;
+        }
+        
+        .sidebar ul li .nav i {
+            margin-right: 10px;
+        }
+        .sidebar ul li.logout {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+        }
+        /* Logo */
+        .logo { 
+            position: fixed; 
+            top: 10px; 
+            left: 58%; 
+            transform: translateX(-50%); 
+            z-index: 1000;
+        }
+
+        .logo img { 
+            width: 250px; 
+            height: auto; 
+        }
+
+        .content {
+            margin-left: 230px; /* Match the sidebar width */
+            padding: 20px;
+            width: calc(100% - 200px); /* Full width minus sidebar */
+            min-height: 100vh; /* Ensure full height */
+            background: white; /* Background color */
+        }
+
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 20px;
+            right: 150px; /* Adjusted for better positioning */
+            height: 40px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 40px;
+            transition: width 0.3s, transform 0.3s;
+        }
+
+        #check:checked ~ .search-container {
+            width: 230px;
+            transform: translateX(-10px);
+        }
+
+        .search-container input {
+            width: 100%;
+            height: 40px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            padding-left: 20px;
+            font-size: 16px;
+            background: #fff;
+            outline: none;
+        }
+
+        .search-container .icon {
+            position: absolute;
+            right: -24px;
+            top: 0;
+            width: 65px;
+            background: #e77d22;
+            color: #003366;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            font-size: 20px;
+            border-radius: 24.1px;
+            padding-top: 2px;
+        }
+
+        #check:checked ~ .search-container .icon {
+            width: 60px;
+            border-radius: 0 25px 25px 0;
+        }
+
+        #check {
+            display: none;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: fixed;
+            top: 0;
+            right: 20px;
+            z-index: 1000;
+
+        }
+
+        .profile-dropbtn {
+            background-color: transparent;
+            color: black;
+            padding: 17px;
+            font-size: 20px;
+            border: none;
+            border-radius: 100%;
+            cursor: pointer;
+        }
+
+        .profile-dropbtn img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            right: 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .profile-dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .profile-dropdown-content a:hover {
+            background-color: #00000016;
+        }
+
+        .profile-dropdown:hover .profile-dropdown-content {
+            display: block;
+        }
+
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 160px;
+            background-color: white;
+            z-index: 1;
+            overflow-y: auto;
+            color: black;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .dropdown-content .dropdown-header {
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        .dropdown-content .sb {
+            display: block;
+            padding: 15px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .dropdown-content .sb:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-header-folder {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            font-weight: bold;
+            padding-top: 30px;
+        }
+
+        .dropdown-header-folder i {
+            font-size: 18px;
+            color: black;
+            margin-left: 10px;
+        }
+
+        .folder-link {
+            display: flex;
+            align-items: center;
+            color: black;
+            text-decoration: none;
+        }
+
+        .folder-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .folder-link h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .hide {
+            display: none;
+        }
+        .title{
+            margin-top: 5px;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='sme-sg-cybervault-logo.png') }}" alt="logo">       
+    </div>
+        <div class="search-bar">
+            <input type="checkbox" id="check">
+            <div class="search-container">
+                <input type="text" name="search" placeholder="Search" oninput="searchTable()">
+                <label for="check" class="icon">
+                    <i class="fas fa-search"></i>
+                </label>
+            </div>
+        </div>
+    
+    
+        <div class="profile-dropdown">
+            <button class="profile-dropbtn" onclick="handleClick('/update_profile')">
+                {% if profile_image %}
+                <img src="data:image/{{ image_format }};base64,{{ profile_image|b64encode }}" alt="Profile Image">
+                {% else %}
+                <img src="{{ url_for('static', filename='img_avatar.png') }}" alt="Image">
+                {% endif %}
+            </button>
+        </div>
+    <div class="container">
+        <div class="sidebar">
+            <h2 > 
+                Password Manager
+            </h2>
+            <ul>
+                <li>
+                    <a href="javascript:void(0)" onclick="handleClickDashboard('/dashboard', this)" class="nav">
+                        <i class="fas fa-home"></i>
+                        <span class="title"style="font-size: 18px;">Dashboard</span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" onclick="handleClick('/passwords', this)" class="nav">
+                        <i class="fas fa-key"></i>
+                        <span class="title"style="font-size: 18px;">Passwords</span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="nav" onclick="handleClick('/category', this)">
+                        <i class="fas fa-list"></i>
+                        <span class="title" style="font-size: 18px;">Category</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="javascript:void(0)" onclick="handleClick('/folders', this)" class="nav">
+                        <i class="fas fa-folder"></i>
+                        <span class="title" style="font-size: 18px;">Folders</span>
+                    </a>
+                </li>
+                <!--li>
+                    <a href="javascript:void(0)" onclick="handleClick('/users', this)" class="nav">
+                        <i class="fas fa-user"></i>
+                        <span class="title" style="font-size: 24px;">User</span>
+                    </a>
+                </li-->
+                
+                <li>
+                    <a href="javascript:void(0)" onclick="handleClick('/trash', this)" class="nav">
+                        <i class="fas fa-trash"></i>
+                        <span class="title" style="font-size: 18px;">Trash</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" onclick="handleClick('/settings', this)" class="nav">
+                        <i class="fas fa-cog"></i>
+                        <span class="title" style="font-size: 18px;">Settings</span>
+                    </a>
+                </li>
+
+                <li class="logout">
+                    <a href="/logout" class="nav">
+                        <i class="fas fa-power-off"></i>
+                        <span class="title" style="font-size: 18px;">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="content" id="content">
+            <!-- Dynamic content will be loaded here -->
+            
+        </div>
+    </div>
+</body>
+</html>

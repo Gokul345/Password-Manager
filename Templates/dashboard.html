@@ -1,0 +1,363 @@
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <title>CyberVault Password Manager</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            /* CSS Reset / Normalize */
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family:Helvetica;
+                margin: 0;
+                padding: 0;
+                overflow-y: hidden;
+            }
+
+            .bs {
+                position: relative;
+                width: 288px;
+                height: 139px;
+                border: 1.5px solid #ffb257;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 20px;
+                margin: 20px;
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                background:white;
+                
+            }
+
+            .bs::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 6px;
+                height: 100%;
+                background: linear-gradient(#ffb257);
+                border-top-left-radius: 12px;
+                border-bottom-left-radius: 12px;
+            }
+
+            .bs > * {
+                position: relative;
+                z-index: 2;
+            }
+
+            .main-buttons {
+                display: flex;
+                justify-content: center;
+                margin-top: 60px;
+            }
+
+            .main-buttons .bs a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .bar {
+                color: black;
+                font-size: 24px;
+                text-align: center;
+            }
+
+            .strong .count, .moderate .count, .weak .count {
+                text-align: center;
+                font-size: 24px; /* Increase the font size */
+                margin-left: 0; /* Remove left margin for proper centering */
+                margin-top: 10px; /* Optional: Add some space above the count */
+            }
+
+
+            .content-container {
+                display: flex;
+                justify-content: center; /* Align items to the start */
+                align-items: center;
+                margin: 20px auto; /* Reduced top margin */
+                max-width: 930px;
+                gap: 40px;
+                height: 350px;
+                margin-left: 150px; /* Add some space between the chart and cards */
+                background: white;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                border-radius: 20px;
+                height: 450px;
+                border: 1px solid #ffb257;
+                margin-bottom: 20px;
+            }
+
+
+            .progress-value {
+                position: absolute;
+                font-size: 40px;
+                font-weight: 600;
+                color: #FD7401;
+            }
+
+            .text {
+                font-size: 22px;
+                font-weight: 500;
+                color: black;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .card-container {
+                display: flex;
+                flex-direction: column; /* Stack cards vertically */
+                align-items: center; /* Center the cards */
+                gap: 40px;
+                margin-left: 50px; /* Add some space between the chart and cards */
+                color:black;
+            }
+
+
+            .strong, .moderate, .weak {
+                position: relative; /* Ensures the ::before elements are positioned correctly */
+                width: 250px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                background-color: white;
+                border: 1px solid #ffb257;
+
+            }
+
+
+            .strong h3, .moderate h3, .weak h3 {
+                font-size: 24px;
+                margin-bottom: 10px; /* Add space below the heading */
+            }
+            .strong::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 6px;
+                height: 100%;
+                background: linear-gradient(#ffb257);
+                border-top-left-radius: 12px;
+                border-bottom-left-radius: 12px;
+                z-index: 1;
+            }
+
+            .moderate::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 6px;
+                height: 100%;
+                background: linear-gradient(#ffb257);
+                border-top-left-radius: 12px;
+                border-bottom-left-radius: 12px;
+                z-index: 1;
+            }
+
+            .weak::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 6px;
+                height: 100%;
+                background: linear-gradient(#ffb257);
+                border-top-left-radius: 12px;
+                border-bottom-left-radius: 12px;
+                z-index: 1;
+            }
+
+            .chart {
+                width: 350px;
+                height: 350px;
+
+            }
+
+            .links {
+                margin: 20px auto;
+                text-align: center;
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                width: 300px;
+                height: 50px;
+                background: white;
+                margin-left: 50px; /* Add some space between the chart and cards */
+            }
+
+
+
+            .links a {
+                margin: 10px;
+                text-decoration: none;
+                color: #007BFF;
+                font-weight: bold;
+                font-size: 18px;
+            }
+
+            .links a:hover {
+                text-decoration: underline;
+            }
+
+            .download-icon {
+                margin-right: 8px;
+            }
+            .status_text{
+                margin-left: 90px;
+                font-size: 24px;
+            }
+        </style>
+    </head>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <body>
+
+        <div class="dashboard">
+            <div class="main-buttons">
+                <div class="bs">
+                    <a href="javascript:void(0)" onclick="handleClick('/passwords', this)">
+                        <span class="bar">Passwords</span>
+                        <span class="text">{{pwd_count}}</span>
+                    </a>
+                </div>
+                <div class="bs">
+                    <a href="javascript:void(0)" onclick="handleClick('/folders', this)">
+                        <span class="bar">Folders</span>
+                        <span class="text">{{folder_count}}</span>
+                    </a>
+                </div>
+                <div class="bs">
+                    <a href="javascript:void(0)" onclick="handleClick('/view', this)">
+                        <span class="bar">View Weak Password</span>
+                        <span class="text">{{View_password}}</span>
+                    </a>
+                </div>
+                
+            </div>
+
+            <div class="content-container">
+                
+                <div class="chart">
+                    <canvas id="passwordStrengthChart"></canvas>
+                    <span class="status_text">Protector Status</span>
+
+                </div>
+                <div class="card-container">
+                    <div class="strong">
+                        <h3>Strong</h3>
+                        <span class="count">{{strong_count}}</span>
+                    </div>
+                    <div class="moderate">
+                        <h3>Moderate</h3>
+                        <span class="count">{{moderate_count}}</span>
+                    </div>
+                    <div class="weak">
+                        <h3>Weak</h3>
+                        <span class="count">{{weak_count}}</span>
+                    </div>
+                </div>
+                
+            </div>
+        <script>
+            function fetchPasswordStrength() {
+                console.log('Fetching password strength...');
+                fetch('/calculate_overall_strength')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Fetched strength data:', data);
+                        if (data.strength !== undefined) {
+                            let strength = data.strength;
+                            let circularProgress = document.querySelector(".circular-progress");
+                            let progressValue = document.querySelector(".progress-value");
+
+                            if (circularProgress && progressValue) {
+                                progressValue.textContent = `${strength.toFixed(2)}%`;
+                                circularProgress.style.background = `conic-gradient(#FD7401 ${strength * 3.6}deg, #ededed ${strength * 3.6}deg)`;
+                            } else {
+                                console.error('Circular progress or progress value elements not found');
+                            }
+                        } else {
+                            console.error('Error fetching strength:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            function fetchChartData() {
+                fetch('/dashboard/data')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            console.error('Error fetching chart data:', data.error);
+                            document.getElementById('chart').innerHTML = '<p>Error loading chart data.</p>';
+                            return;
+                        }
+
+                        const chartData = {
+                            labels: data.labels || [],
+                            values: data.values || [],
+                            colors: data.colors || []
+                        };
+
+                        console.log('Fetched chart data:', chartData);
+                        renderChart(chartData.labels, chartData.values, chartData.colors);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching chart data:', error);
+                        document.getElementById('chart').innerHTML = '<p>Error loading chart data.</p>';
+                    });
+            }
+
+            function renderChart(labels, values, colors) {
+                const total = values.reduce((sum, val) => sum + val, 0);
+
+                const canvas = document.getElementById('passwordStrengthChart');
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    new Chart(ctx, {
+                        type: 'polarArea',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: values,
+                                backgroundColor: colors,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            const count = values[tooltipItem.dataIndex];
+                                            const percentage = Math.round((count / total) * 100); // Round off
+                                            const label = labels[tooltipItem.dataIndex];
+                                            return `${label}: ${count} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.error('Canvas element not found for the chart.');
+                }
+            }
+        </script>
+    </body>
+
+    </html>

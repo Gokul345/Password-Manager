@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Buttons</title>
+    <style>
+        /* Reset margins and paddings */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            font-family: Helvetica;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the content horizontally */
+            justify-content: flex-start; /* Align items to the top */
+        }
+
+        .category_btn {
+            display: flex;
+            flex-wrap: wrap; /* Allow buttons to wrap */
+            justify-content: center; /* Center buttons horizontally */
+            margin-top: 170px; /* Adjust margin as needed */
+        }
+
+        .site, .password, .window {
+            width: 288px;
+            height: 390px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Stack items vertically */
+            font-size: 24px;
+            margin: 0 10px; /* Adjust margin to reduce space between buttons */
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            text-align: center;
+            transition: border 0.3s ease; /* Smooth border transition */
+            background: white;
+            position: relative; /* Allow absolute positioning of inner elements */
+        }
+
+        .count {
+            display: block;
+            width: 135px;
+            height: 40px;
+            background: linear-gradient(#ff9933, #fe5a1d);
+            color: white;
+            margin: 20px auto; /* Adjust margin to position lower */
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 25px;
+            text-align: center;
+            padding-top: 10px; /* Adjust padding for alignment */
+            font-size: 14px;
+            position: absolute; /* Position it relative to the button */
+            bottom: 20px; /* Position it 20px from the bottom */
+        }
+
+        .count:hover {
+            transform: scale(1.03);
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
+            background: #ff6900;
+            color: white;
+        }
+
+        .count:active {
+            transform: scale(0.95);
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 15px 10px -10px;
+        }
+
+        .site a, .password a, .window a {
+            color: black;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column; /* Stack image and text vertically */
+            align-items: center;
+        }
+
+        .site img, .password img, .window img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .site span, .password span, .window span {
+            margin-top: 10px; /* Space between image and text */
+        }
+
+        .site:hover, .password:hover, .window:hover {
+            border-bottom: 2px solid #007bff; /* Highlight border on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="category_btn">
+        <div class="site">
+            <a href="javascript:void(0)" onclick="handleClick('/category_form/Site')">
+                <img src="{{ url_for('static', filename='globe_2330622.png') }}">
+                <span>Site</span>
+                <div class="count">
+                    <span>Count:</span>
+                    <span>{{site}}</span>
+                </div>
+            </a>
+        </div>
+        <div class="password">
+            <a href="javascript:void(0)" onclick="handleClick('/category_form_payment/Payment')">
+                <img src="{{ url_for('static', filename='atm-card_11135749.png') }}">
+                <span>Payment</span>
+                <div class="count">
+                    <span>Count:</span>
+                    <span>{{payment}}</span>
+                </div>
+            </a>
+        </div>
+        <div class="window">
+            <a href="javascript:void(0)" onclick="handleClick('/category_form/Windows')">
+                <img src="{{ url_for('static', filename='microsoft_2504927.png') }}">
+                <span>Windows</span>
+                <div class="count">
+                    <span>Count:</span>
+                    <span>{{window}}</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

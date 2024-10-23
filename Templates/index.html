@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Password Generator</title>
+    <style>
+        body {
+            font-family: helvetica;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Master Password Generator</h1>
+        <button onclick="generateMasterPassword()">Generate Master Password</button>
+        <div class="output" id="passwordOutput"></div>
+        <button onclick="resetMasterPassword()" style="margin-top: 20px;">Reset Master Password</button>
+    </div>
+
+    <script>
+        // Function to call the backend and generate a random master password
+        function generateMasterPassword() {
+            fetch('/generate_password')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('passwordOutput').innerHTML = "Generated Master Password: " + data.password;
+                });
+        }
+
+        // Function to reset the master password by calling the backend
+        function resetMasterPassword() {
+            const confirmReset = confirm("Are you sure you want to reset the master password?");
+            if (confirmReset) {
+                fetch('/reset_password', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('passwordOutput').innerHTML = "New Master Password: " + data.password;
+                        alert("Master password has been reset!");
+                    });
+            } else {
+                alert("Master password reset canceled.");
+            }
+        }
+    </script>
+</body>
+</html>

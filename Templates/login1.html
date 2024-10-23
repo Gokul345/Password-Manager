@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Password Manager</title>
+    <style>
+        body {
+            margin: 0;
+            font-family:Helvetica;
+            display: flex;
+            height: 100vh;
+        }
+        .split {
+            width: 50%;
+            position: relative;
+        }
+        .left {
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .right {
+            background: linear-gradient(135deg, #BFF0FA 0%, #4998FF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .centered img {
+            width: 400px;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            
+        }
+        .form-container h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: block;
+            margin-left: 10px; /* Adjust the left margin to move the input slightly to the left */
+        }
+        .form-container p {
+            text-align: center;
+        }
+        .form-container button {
+            padding: 15px;
+            width: 70%;
+            background-color: #FD7401;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block; /* Ensure button occupies full width */
+            margin: 0 auto; /* Center the button horizontally */
+        }
+        .google {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px; /* Adjust as needed */
+        }
+        .logo{
+            width: 350px;
+        }
+        .fb {
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center;
+            margin-top: 20px; /* Adjust as needed */
+
+        }
+        .fb img {
+            margin-right: 100px; /* Adjust spacing between images */
+            width: 30px; /* Set the same width for both images */
+        }
+        .fb img:last-child {
+            margin-right: 0; /* Remove margin from last image */
+            justify-content: center; /* Center align the last image */
+        }
+        .copyright{
+           position:fixed;
+           bottom:0;
+           left:0; 
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="split left">
+    <img src="{{ url_for('static', filename='sme-sg-cybervault-logo.png') }}" alt="logo" class="logo">       
+     <h3>Password Manager</h3>
+        <div class="form-container">
+            <p><b>Login into your account</b></p>
+            <form action="/" method="post">
+                <label for="username">Email:</label>
+                <input type="email" name="email" id="email" required>
+                <label for="pwd">Password:</label>
+                <input type="password" name="password" id="password" required>
+                <p><a href="/forgot">Forgot password</a></p>
+                <p style="color: red;">{{error}}</p>
+                <button type="submit">Login</button>
+                <p><a href="/signup">Create an Account</a></form></p>
+            </form>
+            <p>or</p>
+        <div class="fb">
+            <img src="{{ url_for('static', filename='FB.png') }}" alt="FB Login" >
+            <img src="{{ url_for('static', filename='google.png') }}"  alt="Google Login" >
+            <img src="{{ url_for('static', filename='X.png') }}" alt="X Login" >
+
+        </div>
+        </div>
+        <p class="copyright"><b>© 2024 Cybervault. All rights reserved</b></p>
+
+
+    </div>
+    <div class="split right">
+        <div class="centered">
+            <img src="{{ url_for('static', filename='right-side.png') }}" alt="logo">
+        </div>
+    </div>
+</body>
+</html>

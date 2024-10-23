@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folders</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: helvetica;
+        }
+        @media print {
+        .table, .table-container {
+            overflow: visible;
+            height: auto !important;
+            width: auto !important;
+        }
+        }
+
+        /* General Styles */
+        body {
+            font-size: 14px;
+            font-family:Helvetica;
+            background-color: #f4f4f4;
+            color: #333;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+        }
+
+        .folder-form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        #folder_name {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .dropbtn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 40px;
+            background-color: #060376;
+            border: 1px solid #060376;
+            cursor: pointer;
+            text-align: center;
+            font-size: 15px;
+            color: rgb(255, 255, 255);
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+
+        .table-container {
+            width: 95%;
+            margin: 20px auto; /* Center the table */
+        }
+
+        /* Table Alignment */
+       /* Style for the table itself */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        /* Fixed header style */
+        thead tr {
+            position: sticky; /* Keep the header fixed */
+            top: 0; /* Position it at the top of the container */
+            background-color: #e77d22; /* Background color to avoid transparency */
+            z-index: 1; /* Ensure it is above the table body */
+        }
+        th {
+                padding: 10px; /* Padding for header cells */
+                border-bottom: 2px solid #ddd; /* Optional: Add a bottom border */
+        }
+        td,th{
+            padding: 12px 15px;
+            text-align: left;
+        }  
+        /* Table Cells */
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+
+        }
+
+        /* Zebra stripes */
+        tbody tr:nth-child(even) {
+            background-color: white; /* Light gray for even rows */
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9; /* White for odd rows */
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1; /* Light gray for hover effect */
+        }
+
+
+        /* Adjust for rounded corners */
+        thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+        thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+        tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+        tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions i {
+            cursor: pointer;
+        }
+
+        .delete {
+            padding-left: 20px;
+            color: red;
+        }
+
+        td img {
+            width: 35px;
+            height: 35px;
+        }
+        tbody tr td a{
+            text-decoration: none;
+            color: black;
+        }
+
+        .action_dropbtn{
+            margin-right: 50px;
+        }
+        
+        @media (max-width: 1000px) {
+            td:not(:first-of-type) {
+                min-width: 12.1rem;
+            }
+        }
+
+        thead th span.icon-arrow {
+            display: inline-block;
+            width: 1.3rem;
+            height: 1.3rem;
+            border-radius: 50%;
+            border: 1.4px solid transparent;
+            
+            text-align: center;
+            font-size: 1rem;
+            
+            margin-left: .5rem;
+            transition: .2s ease-in-out;
+        }
+
+        thead th:hover span.icon-arrow{
+            border: 1.4px solid #6c00bd;
+        }
+
+        thead th:hover {
+            color: #6c00bd;
+        }
+
+        thead th.active span.icon-arrow{
+            background-color: #6c00bd;
+            color: #fff;
+        }
+
+        thead th.asc span.icon-arrow{
+            transform: rotate(180deg);
+        }
+
+        thead th.active,tbody td.active {
+            color: #6c00bd;
+        }
+        /* Dropdown container */
+        .dropdown {
+            position: relative;
+            
+        }
+        .folder {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Adjusts space between the icon and text */
+        }
+
+        
+        /* Dropdown button */
+        .action_dropbtn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 40px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 20px; /* Increased font size for the ellipsis icon */
+            color: darkblue;
+            text-decoration: none;
+            margin-right: 30px;
+
+            }
+
+        /* Dropdown content (hidden by default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0; /* Position to the right of the button */
+            top: 100%; /* Align with the top of the button */
+            background-color: white;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            width: 110px;
+        }
+
+        /* Show the dropdown content when hovering over the dropdown container */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Style for dropdown items */
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: black;
+            text-decoration: none;
+            background-color: white;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Add space between the icon and the text */
+        .dropdown-content a span {
+            margin-left: 10px; /* Adjust the spacing as needed */
+        }
+
+        /* Hover effect for dropdown items */
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+        
+        .row {
+            padding-top: 0;
+        }
+        
+        .folder-container .show-modal {
+            display: block;
+            width: 115px;
+            height: 40px;
+            font-weight: bold;
+            background: #e77d22;
+            color: black;
+            margin: 20px 0; /* Remove auto from margin and use 0 for horizontal */
+            box-shadow: rgba(0,0,0,0.2) 0px 20px 10px -15px;
+            border: none;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 25px;
+            text-align: center;
+            padding-top: 6.5px;
+            margin-left: 30px; /* Adjust this value to position from left edge */
+            float: left; /* Align button to the left */
+            margin-top: 80px;
+            margin-bottom: 30px;
+        }
+        .show-modal:hover {
+            transform: scale(1.03);
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
+        }
+
+        .show-modal:active {
+            transform: scale(0.95);
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 15px 10px -10px;
+        }
+        .folder-container .modal-box {
+            position: fixed;
+            left: 50%;
+            top: 60%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 25px;
+            padding: 30px 20px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .folder-container .folder img {
+        width: 35px;
+        height: 35px;
+        margin-right: 10px;
+        vertical-align: middle;
+        }
+
+        .folder-container .dropdown {
+        position: relative;
+        }
+
+        .folder-container .action_dropbtn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        color: darkblue;
+        }
+
+        .folder-container .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #fff;
+        min-width: 100px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 1001;
+        border-radius: 5px;
+        }
+
+        .folder-container .dropdown:hover .dropdown-content {
+        display: block;
+        }
+
+        .folder-container .dropdown-content a {
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: black;
+        }
+
+        .folder-container .dropdown-content a:hover {
+        background-color: #f1f1f1;
+        }
+
+        .folder-container .close-btn-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        font-size: 20px;
+        color: #333;
+        }
+
+        .folder-container .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        display: none;
+        }
+
+        .folder-container section.active .overlay {
+        display: block;
+        }
+
+        .folder-container section.active .modal-box {
+        display: block;
+        }
+
+        .folder-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 400px; /* Increased width */
+            height:150px;
+            justify-content: center;
+        }
+
+
+        .folder-container .folder-form .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .folder-container .folder-form .close-btn {
+            display: block;
+            width: 115px;
+            height: 40px;
+            font-weight: bold;
+            background: #e77d22;
+            color: black;
+            margin: 20px 0; /* Remove auto from margin and use 0 for horizontal */
+            box-shadow: rgba(0,0,0,0.2) 0px 20px 10px -15px;
+            border: none;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 25px;
+            text-align: center;
+          
+        }
+        .close-btn:hover {
+            transform: scale(1.03);
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
+        }
+
+        .close-btn:active {
+            transform: scale(0.95);
+            box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 15px 10px -10px;
+        }
+    </style>
+</head>
+<body>
+    <section class="folder-container">
+        <section> 
+            <button class="show-modal" onclick="showModal()">Add Folder</button> 
+            <span class="overlay"></span> 
+    
+            <div class="modal-box"> 
+                <div class="close-btn-icon" onclick="hideModal()">&times;</div>
+                <form method="POST" action="/folders" class="folder-form" onsubmit="handleSubmit(event)">
+                    <div class="input-group">
+                        <input type="text" id="folder_name" name="folder_name" placeholder="Add New Folder">
+                    </div><br>
+                    <button type="submit" class="close-btn" onclick="hideModal()">Submit</button>
+                </form> 
+            </div> 
+        </section>
+    
+        <!-- Rename Modal -->
+        <div class="modal-box" id="renameModal">
+            <div class="close-btn-icon" onclick="hideRenameModal()">&times;</div>
+            <form method="POST" action="/rename_folder" class="folder-form" onsubmit="submitRename(event)">
+                <div class="input-group">
+                    <input type="text" id="rename_folder_name" name="rename_folder_name" placeholder="Rename Folder">
+                </div><br>
+                <input type="hidden" id="current_folder_name" name="current_folder_name">
+                <button type="submit" class="close-btn" onclick="hideRenameModal()">Rename</button>
+            </form>
+        </div>
+    </section>
+    
+        <section class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {% for i in headings %}
+                        <th onclick="sortColumn({{ loop.index0 }})">{{ i }}<span class="icon-arrow">&UpArrow;</span></th>
+
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody id="folders-body" data-sort-asc="false">
+                    {% for folder in folder_names %}
+                    <tr>
+                        <td>
+                            <div class="folder">
+                                <img src="{{ url_for('static', filename='folder.png') }}" alt="Folder Icon">
+                                <a href="javascript:void(0)" onclick="loadContent('/folder_form/{{ folder[1] }}')">{{ folder[1] }}</a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <a href="javascript:void(0)" class="action_dropbtn">
+                                    <i class="fas fa-ellipsis-vertical"></i>
+                                </a>
+                                <div class="dropdown-content">
+                                    <a href="javascript:void(0)" onclick="showRenameModal('{{ folder[1] }}', this.closest('tr'))">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Rename</span>
+                                    </a>
+                                    <a href="javascript:void(0);" onclick="deleteFolder('/delete_folder/{{ folder[1] }}', this.parentElement.parentElement)" class="delete">
+                                        <i class="fas fa-trash"></i>
+                                        <span>Delete</span>
+                                    </a>
+                                    <a href="javascript:void(0)" onclick="loadContent('/folder_form/{{ folder[1] }}')" >
+                                        <i class="fas fa-history"></i>
+                                        <span title="Created at: {{ folder[2] }}">History</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </section>
+        {% if message %}
+        <p>{{ message }}</p>
+        {% endif %}
+    </div>
+    <script>
+        function showModal() {
+            document.querySelector(".overlay").style.display = "block"; // Show the overlay
+            document.querySelector(".modal-box").style.display = "block"; // Show the modal
+        }
+
+        function hideModal() {
+            document.querySelector(".overlay").style.display = "none"; // Hide the overlay
+            document.querySelector(".modal-box").style.display = "none"; // Hide the modal
+        }
+
+
+        function deleteFolder(url, rowElement) {
+            // Implement your folder deletion logic here
+            if (confirm('Are you sure you want to delete this folder?')) {
+                // Perform the deletion and remove the row from the table
+                fetch(url, { method: 'DELETE' }).then(response => {
+                    if (response.ok) {
+                        rowElement.remove();
+                    } else {
+                        alert('Failed to delete folder');
+                    }
+                });
+            }
+        }
+        function toggleDropdown(event) {
+            var dropdownContent = event.currentTarget.nextElementSibling;
+            dropdownContent.classList.toggle('show');
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.action_dropbtn')) {
+                var dropdowns = document.querySelectorAll('.dropdown-content');
+                dropdowns.forEach(function (dropdownContent) {
+                    if (dropdownContent.classList.contains('show')) {
+                        dropdownContent.classList.remove('show');
+                    }
+                });
+            }
+        }
+        // Show and hide rename modal
+        function showRenameModal(currentFolderName, folderElement) {
+            document.getElementById('rename_folder_name').value = currentFolderName;  // Pre-fill the current name
+            document.getElementById('current_folder_name').value = currentFolderName;  // Store current folder name
+            document.getElementById('renameModal').folderElement = folderElement;  // Store folder element to update later
+            document.querySelector("#renameModal").style.display = "block";
+        }
+
+        function hideRenameModal() {
+            document.querySelector("#renameModal").style.display = "none";
+        }
+
+        function submitRename(event) {
+            event.preventDefault();
+
+            const newFolderName = document.getElementById('rename_folder_name').value;
+            const currentFolderName = document.getElementById('current_folder_name').value;
+
+            // Prepare the form data
+            const formData = new FormData();
+            formData.append('new_folder_name', newFolderName);
+
+            fetch(/rename_folder/${currentFolderName}, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Update the folder name in the table
+                    const folderElement = document.getElementById('renameModal').folderElement;
+
+                    if (folderElement) {
+                        const linkElement = folderElement.querySelector('a'); // Get the <a> element inside the folder row
+                        if (linkElement) {
+                            linkElement.textContent = newFolderName;  // Update the displayed folder name
+                            linkElement.setAttribute('onclick', loadContent('/folder_form/${newFolderName}'));  // Update the onclick action
+                        }
+                    }
+
+                    hideRenameModal();
+                } else {
+                    throw new Error('Failed to rename folder');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Error renaming folder.');
+            });
+        }
+       // Sorting function
+       function sortColumn(column) {
+            let table = document.querySelector('tbody');
+            let rows = Array.from(table.querySelectorAll('tr'));
+            let sort_asc = !table.getAttribute('data-sort-asc') || table.getAttribute('data-sort-asc') === 'false';
+            table.setAttribute('data-sort-asc', sort_asc);
+
+            rows.sort((a, b) => {
+                let first = a.querySelectorAll('td')[column].textContent.toLowerCase();
+                let second = b.querySelectorAll('td')[column].textContent.toLowerCase();
+
+                if (sort_asc) {
+                    return first.localeCompare(second);
+                } else {
+                    return second.localeCompare(first);
+                }
+            });
+
+            rows.forEach(row => table.appendChild(row));
+        }
+    </script>
+</body>
+</html>

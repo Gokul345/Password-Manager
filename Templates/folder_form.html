@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passwords</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='back.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='checkbox.css') }}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+
+            box-sizing: border-box;
+            font-family: helvetica;
+        }
+        @media print {
+        .table, .table-container {
+        overflow: visible;
+        height: auto !important;
+        width: auto !important;
+        }
+        }
+
+        /* General Styles */
+        body {
+            font-size: 14px;
+            font-family:Helvetica;
+            background-color: #f4f4f4;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header Style */
+        h1 {
+            margin-left: 550px;
+            color: #444;
+            font-size: 22px;
+            margin-top: 50px;
+
+        }
+        /* Table Container */
+        .table-container {
+            width: 95%;
+            margin: 20px auto; /* Add margin to center the table */
+            border-radius: .6rem;
+            padding: 10px; /* Add padding for better spacing */
+        }
+
+        /* Table Alignment */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            overflow-y: auto;
+
+        }
+
+        /* Header Cells */
+        thead th {
+            background-color: #e77d22;
+            cursor: pointer;
+            padding: 15px;
+            text-transform: capitalize;
+            font-weight: bold;
+            border-bottom: 2px solid #ccc;
+        }
+
+        /* Table Cells */
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        /* Zebra stripes */
+        tbody tr:nth-child(even) {
+            background-color: white; /* Light gray for even rows */
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9; /* White for odd rows */
+        }
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Adjust for rounded corners */
+        thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+        thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+        tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+        tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+
+        
+        @media (max-width: 1000px) {
+            td:not(:first-of-type) {
+                min-width: 12.1rem;
+            }
+        }
+
+        thead th span.icon-arrow {
+            display: inline-block;
+            width: 1.3rem;
+            height: 1.3rem;
+            border-radius: 50%;
+            border: 1.4px solid transparent;
+            
+            text-align: center;
+            font-size: 1rem;
+            
+            margin-left: .5rem;
+            transition: .2s ease-in-out;
+        }
+
+        thead th:hover span.icon-arrow{
+            border: 1.4px solid #6c00bd;
+        }
+
+        thead th:hover {
+            color: #6c00bd;
+        }
+
+        thead th.active span.icon-arrow{
+            background-color: #6c00bd;
+            color: #fff;
+        }
+
+        thead th.asc span.icon-arrow{
+            transform: rotate(180deg);
+        }
+
+        thead th.active,tbody td.active {
+            color: #6c00bd;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>{{ folder_name }} Passwords</h1>
+    <a href="javascript:void(0)" onclick="handleClick('/folders', this)" class="back">
+        <img src="{{ url_for('static', filename='back.png') }}" alt="Image">
+
+    </a>
+    <section class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>URL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pwd in passwords %}
+                <tr>
+                    <td><a href="javascript:void(0)" onclick="loadContent('/pwd/{{ pwd[0] }}')">{{ pwd[0] }}</a></td>
+                    <td>{{ pwd[1] }}</td>
+                    <td>
+                        <a href="{{ pwd[2] }}" target="_blank" title="{{ pwd[2] }}">
+                            <i class="fas fa-link"></i>
+                        </a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Profile - Update</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Center the form on the page */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow-y: hidden;
+        }
+        .profile{
+            margin-top: 80px;
+            font-size: 24px;
+            padding-left: 580px;
+        }
+        .form-container {
+            width: 40%;
+            background: linear-gradient(90deg, rgb(255, 255, 255) 0%, rgb(244, 247, 251) 100%);
+            border-radius: 40px;
+            padding: 0;
+            box-shadow: #ffa500 0px 30px 30px -20px;
+            margin: 1px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 150px;
+            transform: translateY(-55px);
+            height: 650px; /* Set a fixed height */
+            overflow: hidden;
+        }
+        .profile-image {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto; /* Center profile image horizontally */
+            background-color: rgba(245, 239, 239, 0.355);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block; /* Show image by default if available */
+        }
+
+        .profile-image .person-icon {
+            font-size: 50px;
+            color: #555;
+            display: block; /* Show icon by default if no image */
+        }
+
+        .profile-image input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .profile-image .change-icon {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border-radius: 50%;
+            padding: 10px;
+            font-size: 24px; /* Size of the + symbol */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer; /* Make it clickable */
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="submit"],
+        .form-group select {
+            width: 100%;
+            background: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            box-shadow: #ffa500 0px 10px 10px -5px;
+            border-inline: 2px solid transparent;
+        }
+        .form-group input::-moz-placeholder {
+            color: rgb(170, 170, 170);
+        }
+
+        .form-group input::placeholder {
+            color: rgb(170, 170, 170);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-inline: 2px solid #ffa500;
+        }
+        .form-group input[type="submit"] {
+            display: block;
+            width: 100%;
+            font-weight: bold;
+            background: white;
+            color: #ffa500;
+            padding-block: 15px;
+            margin: 20px auto;
+            border-radius: 20px;
+            border: 1px solid #ffa500;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #ffa500;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <form method="post" action="/update_profile" enctype="multipart/form-data">
+            <div class="profile-image">
+                {% if user.profile_image %}
+                <img src="data:image/png;base64,{{ user.profile_image|b64encode }}" alt="Profile Image">
+                {% else %}
+                    <i class="fas fa-user person-icon"></i> <!-- Human icon when no image -->
+                {% endif %}
+                <input type="file" id="profile_img" name="profile_image" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label for="name">User Name:</label>
+                <input type="text" id="name" name="name" value="{{ user.name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required readonly>
+            </div>
+            <div class="form-group">
+                <label for="mobile">Mobile Phone:</label>
+                <input type="tel" id="mobile" name="mobile" value="{{ user.mobile }}">
+            </div>
+            <div class="form-group">
+                <label for="street">Permanent Address:</label>
+                <input type="text" id="street" name="address" value="{{ user.address }}" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Update Profile">
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById("profile_img").addEventListener("change", function(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.querySelector(".profile-image img");
+                output.src = reader.result;
+                output.style.display = 'block'; // Show the image
+                document.querySelector(".person-icon").style.display = 'none'; // Hide person icon
+                document.querySelector(".change-icon").style.display = 'none'; // Hide + symbol
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+
+        // Make the + icon trigger file input
+        document.querySelector(".change-icon").addEventListener("click", function() {
+            document.getElementById("profile_img").click();
+        });
+    </script>
+</body>
+</html>

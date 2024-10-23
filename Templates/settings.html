@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+         /* Reset margins and paddings */
+         *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: Helvetica;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: hidden;
+        }
+
+        .settings_btn {
+            display: flex;
+            flex-wrap: wrap; /* Allow buttons to wrap */
+            justify-content: center; /* Center buttons horizontally */
+            margin-top: 100px;
+            position: relative; /* Positioning to allow adjustments */
+        }
+
+        .settings_btn .fr, .settings_btn .sr, .settings_btn .tr {
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            height: 200px;
+            margin-bottom:10px; /* Add margin for spacing */
+        }
+
+        .aboutus, .hc, .themes, .policy, .cmp, .import, .up {
+            flex: 1 1 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+            height: 139px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin: 10px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            text-align: center;
+            transition: border 0.3s ease;
+            background: white;
+        }
+
+        .aboutus a, .hc a, .themes a, .policy a, .cmp a, .import a, .up a {
+            color: black;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .aboutus img, .hc img, .themes img, .policy img, .cmp img, .import img,.up img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .aboutus span, .hc span, .themes span, .policy span, .cmp span, .import span,.up span {
+            margin-top: 10px;
+        }
+
+        .aboutus:hover, .hc:hover, .themes:hover, .policy:hover, .cmp:hover, .import:hover, .up:hover {
+            border-bottom: 4px solid #fda766;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            border: 2px solid #ccc;
+            margin-top: 20px; /* Spacing from the settings buttons */
+            margin-left: 280px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            background-color: rgba(245, 239, 239, 0.355);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .profile-image .person-icon {
+            font-size: 50px;
+            color: #555;
+            display: block;
+        }
+
+        .profile-image input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .profile-image .change-icon {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border-radius: 50%;
+            padding: 10px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .form-header h2 {
+            font-size: 24px;
+            background: linear-gradient(135deg, #2BF498 20%, #00A1FB 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: large;
+        }
+
+        .form-group input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #fda766 20%, #00A1FB 80%);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background: linear-gradient(135deg, #2BF498 20%, #00A1FB 80%);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="settings_btn">
+        <div class="tr">
+            <div class="up">
+                <a href="javascript:void(0)" onclick="handleClick('/update_profile')">
+                    <img src="{{ url_for('static', filename='update-user.png') }}">
+                    <span>Update Profile</span>
+                </a>
+            </div>
+        </div>
+        <div class="fr">
+            <div class="aboutus">
+                <a href="javascript:void(0)" onclick="handleClick('/about')">
+                    <img src="{{ url_for('static', filename='information.png') }}">
+                    <span>About Us</span>
+                </a>
+            </div>
+        </div>
+        <div class="sr">
+            <div class="import">
+                <a href="javascript:void(0)" onclick="handleClick('/import')">
+                    <img src="{{ url_for('static', filename='import.png') }}">
+                    <span>Import</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

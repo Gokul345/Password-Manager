@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <style>
+        body {
+            margin: 0;
+            font-family:Helvetica;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .split {
+            width: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .left {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+        .right {
+            background: linear-gradient(135deg, #BFF0FA 0%, #4998FF 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .centered img {
+            width: 400px;
+
+        }
+        
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            position: relative;
+            height: 500px;
+        }
+        .form-container img.logo {
+            display: block;
+            margin: 0 auto 20px;
+        }
+        .form-container h3 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: block;
+            margin-left: 10px;
+        }
+        .logo{
+            width: 350px;
+            margin-bottom: 30px;
+        }
+        .form-container p {
+            text-align: center;
+        }
+        .form-container button {
+            padding: 5px 10px;
+            width: auto;
+            color: white;
+            background-color: #fd7401;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+        .checkbox-container input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+        .check {
+            font-size: 12px;
+        }
+        .copyright {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+        .suggest-btn {
+            position: absolute;
+            right: -7px;
+            top: 50%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            transform: translateY(-50%);
+            
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+            top: -30px;
+            right: 40px;
+        }
+        .password-requirements {
+            margin-top: 10px;
+            margin-left: 10px;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0;
+            background-color: green;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+        }
+        .requirements-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .requirements-list li {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="split left">
+        <img src="{{ url_for('static', filename='sme-sg-cybervault-logo.png') }}" alt="logo" class="logo">
+
+        <div class="form-container">
+            <p><b>Sign Up into new account</b></p>
+            <form id="signupForm" action="/signup" method="post">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" required>
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" required>
+                <label for="mobile">Mobile:</label>
+                <input type="tel" name="mobile" id="mobile" required>
+                <label for="pwd">New Password:</label>
+                <div style="position: relative;">
+                    <input type="password" name="pwd" id="pwd" required>
+                    <button type="button" class="suggest-btn" id="suggestPasswordBtn">🔑</button>
+                    <div class="tooltip" id="passwordTooltip">Click to generate a strong password</div>
+                </div>
+                <div class="password-requirements" id="passwordRequirements">
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" id="progressBarFill">
+                            <div class="progress-text" id="progressText">0%</div>
+                        </div>
+                    </div>
+                    <ul class="requirements-list">
+                        <li id="length">At least 8 characters</li>
+                        <li id="uppercase">At least one uppercase letter</li>
+                        <li id="lowercase">At least one lowercase letter</li>
+                        <li id="number">At least one number</li>
+                        <li id="special">At least one special character</li>
+                    </ul>
+                </div>
+                <label for="re-pwd">Confirm Password:</label>
+                <input type="password" name="re-pwd" id="re-pwd" required>
+                <div class="checkbox-container">
+                    <input type="checkbox" name="check" id="check" required>
+                    <label for="check" class="check">Get emails from Cybervault with our latest announcements, product updates, events, and research opportunities.</label>
+                </div>
+                <p style="color: red;">{{error}}</p>
+                <button type="submit">Sign Up</button>
+                <div class="register">
+                    <p>Already have an account? <a href="/">Login</a></p>
+                </div>
+            </form>
+
+        </div>
+        <p class="copyright"><b>© 2024 Cybervault. All rights reserved</b></p>
+
+    </div>
+    <div class="split right">
+        <div class="centered">
+            <img src="{{ url_for('static', filename='right-side.png') }}" alt="right side image">
+        </div>
+    </div>
+
+    <script>
+        const passwordField = document.getElementById('pwd');
+        const confirmPasswordField = document.getElementById('re-pwd');
+        const passwordRequirements = document.getElementById('passwordRequirements');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressText = document.getElementById('progressText');
+        const signupForm = document.getElementById('signupForm');
+        const passwordTooltip = document.getElementById('passwordTooltip');
+        const suggestPasswordBtn = document.getElementById('suggestPasswordBtn');
+
+        suggestPasswordBtn.addEventListener('mouseenter', function() {
+            passwordTooltip.style.display = 'block';
+        });
+
+        suggestPasswordBtn.addEventListener('mouseleave', function() {
+            passwordTooltip.style.display = 'none';
+        });
+
+        suggestPasswordBtn.addEventListener('click', function() {
+            fetch('/generate_password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'length=8',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.generated_password) {
+                    passwordField.value = data.generated_password;
+                    confirmPasswordField.value = data.generated_password;
+                    checkPasswordRequirements();
+                } else {
+                    alert('Error generating password');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error generating password');
+            });
+        });
+
+        passwordField.addEventListener('focus', function() {
+            passwordRequirements.style.display = 'block';
+        });
+
+        passwordField.addEventListener('input', checkPasswordRequirements);
+
+        function checkPasswordRequirements() {
+            const password = passwordField.value;
+            const lengthReq = password.length >= 8;
+            const uppercaseReq = /[A-Z]/.test(password);
+            const lowercaseReq = /[a-z]/.test(password);
+            const numberReq = /[0-9]/.test(password);
+            const specialReq = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+            document.getElementById('length').style.color = lengthReq ? 'green' : 'red';
+            document.getElementById('uppercase').style.color = uppercaseReq ? 'green' : 'red';
+            document.getElementById('lowercase').style.color = lowercaseReq ? 'green' : 'red';
+            document.getElementById('number').style.color = numberReq ? 'green' : 'red';
+            document.getElementById('special').style.color = specialReq ? 'green' : 'red';
+
+            const strength = [lengthReq, uppercaseReq, lowercaseReq, numberReq, specialReq].filter(Boolean).length;
+            const strengthPercentage = (strength / 5) * 100;
+
+            progressBarFill.style.width = strengthPercentage + '%';
+            progressBarFill.style.backgroundColor = strengthPercentage < 60 ? 'red' : strengthPercentage < 80 ? 'blue' : 'green';
+            progressText.textContent = strengthPercentage + '%';
+        }
+    </script>
+</body>
+</html>

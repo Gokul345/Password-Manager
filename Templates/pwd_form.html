@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EOL Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .popup {
+            display: flex;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            font-size: large;
+            position: relative;
+        }
+        .form-container h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            padding: 10px;
+            margin-bottom: 1px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+        }
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .input-wrapper input {
+            padding-right: 40px; /* Leave space for the copy icon */
+        }
+        .input-wrapper .fa-copy {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            transition: top 0.2s; /* Smooth transition */
+        }
+        .input-wrapper .message {
+            color: green;
+            margin-top: 5px;
+            font-size: small;
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper .toggle-password {
+            position: absolute;
+            right: 40px; /* Leave space for the toggle icon */
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            background: #fff;
+            border-radius: 50%;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="popup" class="popup">
+        <div class="form-container">
+            <div class="close-btn" onclick="closePopup()">&times;</div>
+            <form method="GET">
+                <label for="username"><b>Username:</b></label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" value="{{ form.username }}">
+                    <i class="fa fa-copy" onclick="copyToClipboard('username')"></i>
+                    <span id="usernameMessage" class="message"></span>
+                </div>
+                
+                <label for="pwd"><b>Password:</b></label>
+                <div class="input-wrapper password-wrapper">
+                    <input type="password" id="pwd" name="pwd" value="{{ form.pwd }}">
+                    <span class="toggle-password" onclick="togglePassword()">
+                        <i class="far fa-eye" id="togglePassword"></i>
+                    </span>
+                    <i class="fa fa-copy" onclick="copyPassword()"></i>
+                    <span id="passwordMessage" class="message"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function togglePassword() {
+            const password = document.getElementById('pwd');
+            const toggleIcon = document.getElementById('togglePassword');
+
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            toggleIcon.classList.toggle('fa-eye-slash');
+        }
+
+        function copyToClipboard(id) {
+            const copyText = document.getElementById(id);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            const message = document.getElementById('usernameMessage');
+            message.innerText = "Copied the username!";
+            message.style.display = "block"; // Show the message
+            setTimeout(() => message.style.display = "none", 2000); // Hide after 2 seconds
+        }
+
+        function copyPassword() {
+            const passwordField = document.getElementById('pwd');
+            const password = passwordField.value;
+
+            const tempInput = document.createElement('input');
+            tempInput.value = password;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            const message = document.getElementById('passwordMessage');
+            message.innerText = "Copied the password!";
+            message.style.display = "block"; // Show the message
+            setTimeout(() => message.style.display = "none", 2000); // Hide after 2 seconds
+        }
+    </script>
+</body>
+</html>

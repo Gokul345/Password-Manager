@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Password Manager</title>
+    <style>
+        body {
+            margin: 0;
+            font-family:Helvetica;
+            display: flex;
+            height: 100vh;
+        }
+        .split {
+            width: 50%;
+            position: relative;
+        }
+        .left {
+            background-color: #f1f1f1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .right {
+            background: linear-gradient(135deg, #BFF0FA 0%, #4998FF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .centered img {
+            width: 400px;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            border-radius: 20px;           
+        }
+        .form-container h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: block;
+            margin-left: 10px; /* Adjust the left margin to move the input slightly to the left */
+        }
+        .form-container p {
+            text-align: center;
+        }
+        .form-container button {
+            padding: 15px;
+            width: 70%;
+            background-color: #FD7401;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block; /* Ensure button occupies full width */
+            margin: 0 auto; /* Center the button horizontally */
+        }
+        .copyright{
+            position: fixed;
+            bottom:0;
+            left:0;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="split left">
+    <img src="{{ url_for('static', filename='sme-sg-cybervault-logo.png') }}" alt="logo">       
+     <h3>Password Manager</h3>
+        <div class="form-container">
+            <p><b>Reset Password</b></p>
+            <form action="/reset" method="post">
+                <label for="pwd"> New Password:</label>
+                <input type="password" name="pwd" id="pwd" required>
+                <label for="re-pwd">Confirm Password:</label>
+                <input type="password" name="pwd" id="pwd" required>
+                <button type="submit">Reset Password</button>
+            </form> 
+        </div>
+        <p class="copyright"><b>© 2024 Cybervault. All rights reserved</b></p>
+        </div>
+    <div class="split right">
+        <div class="centered">
+            <img src="{{ url_for('static', filename='right-side.png') }}" alt="logo">
+        </div>
+    </div>
+</body>
+</html>
